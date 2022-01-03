@@ -119,5 +119,19 @@ describe('UserSignupPage', () => {
       setupForSubmit()
       expect(() => fireEvent.click(button)).not.toThrow()
     })
+
+    it('calls post with user body when the fields are valid', () => {
+      const actions = {
+        postSignup: jest.fn().mockResolvedValueOnce({}),
+      }
+      setupForSubmit({ actions })
+      fireEvent.click(button)
+      const expectedUser = {
+        usernam: 'the-username',
+        displayName: 'the-display-name',
+        password: 'the-password',
+      }
+      expect(actions.postSignup).toHaveBeenCalledTimes(1)
+    })
   })
 })

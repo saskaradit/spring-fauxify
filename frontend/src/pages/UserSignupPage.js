@@ -9,6 +9,11 @@ const UserSignupPage = (props) => {
   const submit = () => {
     if (props.actions) {
       props.actions.postSignup()
+      const user = {
+        username,
+        displayName,
+        password,
+      }
     }
   }
 
@@ -54,13 +59,13 @@ const UserSignupPage = (props) => {
   )
 }
 
-UserSignupPage.defaultProps = {
-  actions: {
-    postSignup: () =>
-      new Promise((resolve, reject) => {
-        resolve({})
-      }),
-  },
-}
+// UserSignupPage.defaultProps = {
+//   actions: {
+//     postSignup: () =>
+//       new Promise((resolve, reject) => {
+//         resolve({})
+//       }),
+//   },
+// }
 
 export default UserSignupPage
