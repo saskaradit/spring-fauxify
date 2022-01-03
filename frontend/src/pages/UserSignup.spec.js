@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import UserSignupPage from './UserSignupPage'
 
@@ -43,6 +43,16 @@ describe('UserSignupPage', () => {
       passwordInput,
       confirmPasswordInput,
       usernameInput
+
+    const mockAsyncDelayed = () => {
+      jest.fn().mockImplementation(() => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve({})
+          }, 300)
+        })
+      })
+    }
 
     const setupForSubmit = (props) => {
       const rendered = render(<UserSignupPage {...props} />)
@@ -132,6 +142,37 @@ describe('UserSignupPage', () => {
         password: 'the-password',
       }
       expect(actions.postSignup).toHaveBeenCalledTimes(1)
+    })
+    it('does not allow user to click the signup after an ongoing api call ', () => {
+      const actions = {
+        postSignup: mockAsyncDelayed(),
+      }
+      setupForSubmit({ actions })
+      fireEvent.click(button)
+      fireEvent.click(button)
+      expect(actions.postSignup).toHaveBeenCalledTimes(1)
+    })
+    it('displays spinner when an api is ongoing', () => {
+      const actions = {
+        postSignup: mockAsyncDelayed(),
+      }
+      const { queryByText } = setupForSubmit({ actions })
+      fireEvent.click(button)
+
+      const spinner = queryByText('Loading...')
+      expect(spinner).toBeInTheDocument()
+    })
+    it('hides spinner when an api is completed', async () => {
+      const actions = {
+        postSignup: mockAsyncDelayed(),
+      }
+      const { queryByText } = setupForSubmit({ actions })
+      fireEvent.click(button)
+
+      await waitFor()
+
+      const spinner = queryByText('Loading...')
+      expect(spinner).toBeInTheDocument()
     })
   })
 })

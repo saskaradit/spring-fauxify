@@ -5,23 +5,26 @@ const UserSignupPage = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setconfirmPassword] = useState('')
+  const [sent, setSent] = useState(false)
 
   const submit = () => {
     if (props.actions) {
-      props.actions.postSignup()
       const user = {
         username,
         displayName,
         password,
       }
+      setSent(true)
+      props.actions.postSignup(user).then((response) => {
+        setSent(false)
+      })
     }
   }
 
   return (
-    <div className='container'>
+    <div className='container col-4'>
       <h1 className='text-center'>Sign Up</h1>
-      <div className='col-12 mb-3'>
-        <label>Display Name</label>
+      <div className='mb-3'>
         <input
           type='text'
           className='form-control'
@@ -30,8 +33,7 @@ const UserSignupPage = (props) => {
           onChange={(e) => setDisplayName(e.target.value)}
         />
       </div>
-      <div className='col-12 mb-3'>
-        <label>Username</label>
+      <div className='mb-3'>
         <input
           className='form-control'
           type='text'
@@ -40,8 +42,7 @@ const UserSignupPage = (props) => {
           onChange={(e) => setUsername(e.target.value)}
         />
       </div>
-      <div className='col-12 mb-3'>
-        <label>Password</label>
+      <div className='mb-3'>
         <input
           className='form-control'
           type='password'
@@ -50,8 +51,7 @@ const UserSignupPage = (props) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <div className='col-12 mb-3'>
-        <label>Confirm Password</label>
+      <div className='mb-3'>
         <input
           className='form-control'
           type='password'
@@ -61,8 +61,13 @@ const UserSignupPage = (props) => {
         />
       </div>
       <div className='text-center'>
-        <button className='btn btn-primary' onClick={submit}>
+        <button className='btn btn-primary' onClick={submit} disabled={sent}>
           Sign Up
+          {sent && (
+            <div className='spinner-border text-light spinner-border-sm mr-sm-1'>
+              <span className='sr-only'>Loading...</span>
+            </div>
+          )}
         </button>
       </div>
     </div>
