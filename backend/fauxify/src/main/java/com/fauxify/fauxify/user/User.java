@@ -17,7 +17,7 @@ public class User {
     private long id;
 
 //    @NotNull(message = "Username cannot be null")
-    @NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
+    @NotNull(message = "{fauxify.constraints.username.NotNull.message}")
     @Size(min=4, max=255)
     private String username;
 
@@ -27,6 +27,6 @@ public class User {
 
     @NotNull
     @Size(min=6, max=255)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{fauxify.constraints.password.Pattern.message}")
     private String password;
 }

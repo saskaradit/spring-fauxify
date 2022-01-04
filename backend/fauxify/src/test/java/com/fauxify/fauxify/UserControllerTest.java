@@ -163,6 +163,15 @@ public class UserControllerTest {
         assertThat(validationErrors.get("username")).isEqualTo("Username cannot be null");
     }
 
+    @Test
+    public void postUser_whenUserHasInvalidPasswordPattern_receiveMesasgeOfPasswordPatternError(){
+        User user = createValidUser();
+        user.setPassword("jengjet");
+        ResponseEntity<ApiError> response = postSignup(user,ApiError.class);
+        Map<String,String> validationErrors = response.getBody().getValidationErrors();
+        assertThat(validationErrors.get("password")).isEqualTo("Password must have at least one uppercase and one lowercase characters with at least one number");
+    }
+
     public <T> ResponseEntity<T> postSignup(Object request, Class<T> response){
         return testRestTemplate.postForEntity(API_1_USERS,request,response);
     }
