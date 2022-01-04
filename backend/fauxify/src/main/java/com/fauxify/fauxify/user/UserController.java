@@ -6,14 +6,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
-public class UserContoller {
+public class UserController {
 
     @Autowired
     UserService userService;
 
     @PostMapping("/api/v1/users")
-    GenericResponse createUser(@RequestBody User user){
+    GenericResponse createUser(@Valid @RequestBody User user){
         userService.save(user);
         return new GenericResponse("User Saved");
     }
