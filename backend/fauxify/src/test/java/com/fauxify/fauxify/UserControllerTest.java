@@ -2,6 +2,7 @@ package com.fauxify.fauxify;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fauxify.fauxify.error.ApiError;
 import com.fauxify.fauxify.shared.GenericResponse;
 import com.fauxify.fauxify.user.User;
 import com.fauxify.fauxify.user.UserRepository;
@@ -20,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -136,6 +138,29 @@ public class UserControllerTest {
         user.setPassword("alllowercase");
         ResponseEntity<Object> response = postSignup(user, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void postUser_whenUserIsInvalid_receiveApiError(){
+        User user = new User();
+        ResponseEntity<ApiError> response = postSignup(user,ApiError.class);
+        assertThat(response.getBody().getUrl()).isEqualTo(API_1_USERS);
+    }
+
+    @Test
+    public void postUser_whenUserIsInvalid_receiveApiErrorWithValidationError(){
+        User user = new User();
+        ResponseEntity<ApiError> response = postSignup(user,ApiError.class);
+        assertThat(response.getBody().getValidationErrors().size()).isEqualTo(3);
+    }
+
+    @Test
+    public void postUser_whenUserHasNullUsername_receiveMessageOfNullErrorForUsername(){
+        User user = createValidUser();
+        user.setUsername(null);
+        ResponseEntity<ApiError> response = postSignup(user,ApiError.class);
+        Map<String,String> validationErrors = response.getBody().getValidationErrors();
+        assertThat(validationErrors.get("username")).isEqualTo("Username cannot be null");
     }
 
     public <T> ResponseEntity<T> postSignup(Object request, Class<T> response){

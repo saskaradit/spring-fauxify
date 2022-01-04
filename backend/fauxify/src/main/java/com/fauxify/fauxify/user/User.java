@@ -16,7 +16,8 @@ public class User {
     @GeneratedValue
     private long id;
 
-    @NotNull
+//    @NotNull(message = "Username cannot be null")
+    @NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
     @Size(min=4, max=255)
     private String username;
 
