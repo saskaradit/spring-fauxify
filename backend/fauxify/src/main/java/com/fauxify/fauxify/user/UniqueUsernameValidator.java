@@ -1,0 +1,21 @@
+package com.fauxify.fauxify.user;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername,String> {
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context){
+        User existing = userRepository.findByUsername(value);
+        if(existing == null){
+            return true;
+        }
+        return false;
+    }
+}

@@ -6,7 +6,6 @@ import com.fauxify.fauxify.error.ApiError;
 import com.fauxify.fauxify.shared.GenericResponse;
 import com.fauxify.fauxify.user.User;
 import com.fauxify.fauxify.user.UserRepository;
-import com.fauxify.fauxify.user.UserService;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -170,6 +169,25 @@ public class UserControllerTest {
         ResponseEntity<ApiError> response = postSignup(user,ApiError.class);
         Map<String,String> validationErrors = response.getBody().getValidationErrors();
         assertThat(validationErrors.get("password")).isEqualTo("Password must have at least one uppercase and one lowercase characters with at least one number");
+    }
+
+    @Test
+    public void postUser_whenAnotherUserHasSameUsername_receiveBadRequest(){
+        userRepository.save(createValidUser());
+
+        User user = createValidUser();
+        ResponseEntity<ApiError> response = postSignup(user,ApiError.class);
+        Map<String,String> validationErrors = response.getBody().getValidationErrors();
+        assertThat(validationErrors.get("username")).isEqualTo("This username is already used");
+    }
+
+    @Test
+    public void postUser_whenAnotherUserHasSameUsername_receiveMessageOfDuplicateUsername(){
+        userRepository.save(createValidUser());
+
+        User user = createValidUser();
+        ResponseEntity<Object> response = postSignup(user,Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     public <T> ResponseEntity<T> postSignup(Object request, Class<T> response){
