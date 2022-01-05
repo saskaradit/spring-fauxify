@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Input from '../components/input'
 
 const UserSignupPage = (props) => {
@@ -46,9 +46,9 @@ const UserSignupPage = (props) => {
           value={displayName}
           onChange={(e) => {
             setDisplayName(e.target.value)
-            const errors = { ...errors }
+            // const errors = { ...errors } || {}
             delete errors.displayName
-            setDisplayName(value)
+            setDisplayName(e.target.value)
             setErrors(errors)
           }}
           hasError={errors.displayName && true}
@@ -63,9 +63,9 @@ const UserSignupPage = (props) => {
           value={username}
           onChange={(e) => {
             setUsername(e.target.value)
-            const errors = { ...errors }
+            // const errors = { ...errors }
             delete errors.username
-            setUsername(value)
+            setUsername(e.target.value)
             setErrors(errors)
           }}
           hasError={errors.username && true}
@@ -80,12 +80,9 @@ const UserSignupPage = (props) => {
           value={password}
           onChange={(e) => {
             setPassword(e.target.value)
-            setMatchPassword(confirmPassword === password)
-            const errors = { ...errors }
-            delete errors.username
-            errors.confirmPassword = matchPassword
-              ? ''
-              : 'Password does not match'
+            setMatchPassword(confirmPassword === e.target.value)
+            // const errors = { ...errors }
+            // console.log('password', e.target.value, password)
           }}
           hasError={errors.password && true}
           error={errors.password}
@@ -99,12 +96,11 @@ const UserSignupPage = (props) => {
           value={confirmPassword}
           onChange={(e) => {
             setConfirmPassword(e.target.value)
-            setMatchPassword(confirmPassword === password)
-            delete errors.username
-            const errors = { ...errors }
-            errors.confirmPassword = matchPassword
-              ? ''
-              : 'Password does not match'
+            setMatchPassword(e.target.value === password)
+            delete errors.confirmPassword
+            // const errors = { ...errors }
+            errors.confirmPassword =
+              e.target.value === password ? '' : 'Password does not match'
           }}
           hasError={errors.confirmPassword && true}
           error={errors.confirmPassword}
