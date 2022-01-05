@@ -196,5 +196,40 @@ describe('UserSignupPage', () => {
 
       expect(errorMessage).toBeInTheDocument()
     })
+    it('enables the signup button only when the password match', () => {
+      setupForSubmit()
+      expect(button).not.toBeDisabled()
+    })
+    it('disables the signup button when the password did not match', () => {
+      setupForSubmit()
+      fireEvent.change(confirmPassword, changeEvent('new-pass'))
+      expect(button).not.toBeDisabled()
+    })
+    it('displays the error when the password did not match', () => {
+      const { queryByText } = setupForSubmit()
+      fireEvent.change(confirmPassword, changeEvent('new-pass'))
+      const mismatch = queryByText('Does not match to password')
+      expect(button).not.toBeDisabled()
+    })
+    it('hides validation error for displayName', async () => {
+      const actions = {
+        postSignup: jest.fn().mockRejectedValue({
+          response: {
+            data: {
+              validationErrors: {
+                displayName: 'Cannot be null',
+              },
+            },
+          },
+        }),
+      }
+      const { findByText } = setupForSubmit({ actions })
+      fireEvent.click(button)
+
+      const errorMessage = await findByText('Cannot be null')
+      fireEvent.change(displayNameInput, changeEvent('name updated'))
+
+      expect(errorMessage).not.toBeInTheDocument()
+    })
   })
 })
