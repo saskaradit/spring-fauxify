@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const UserSignupPage = (props) => {
   const [displayName, setDisplayName] = useState('')
@@ -6,6 +6,7 @@ const UserSignupPage = (props) => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setconfirmPassword] = useState('')
   const [sent, setSent] = useState(false)
+  const [errors, setErrors] = useState({})
 
   const submit = () => {
     if (props.actions) {
@@ -15,9 +16,20 @@ const UserSignupPage = (props) => {
         password,
       }
       setSent(true)
-      props.actions.postSignup(user).then((response) => {
-        setSent(false)
-      })
+      props.actions
+        .postSignup(user)
+        .then((response) => {
+          setSent(false)
+        })
+        .catch((apiError) => {
+          if (
+            apiError.response.data &&
+            apiError.response.data.validationErrors
+          ) {
+            setErrors(apiError.response.data.validationErrors)
+          }
+          setSent(false)
+        })
     }
   }
 
@@ -32,6 +44,7 @@ const UserSignupPage = (props) => {
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
         />
+        <div className='invalid-feedback'>{errors.displayName}</div>
       </div>
       <div className='mb-3'>
         <input
@@ -74,13 +87,13 @@ const UserSignupPage = (props) => {
   )
 }
 
-// UserSignupPage.defaultProps = {
-//   actions: {
-//     postSignup: () =>
-//       new Promise((resolve, reject) => {
-//         resolve({})
-//       }),
-//   },
-// }
+UserSignupPage.defaultProps = {
+  actions: {
+    postSignup: () =>
+      new Promise((resolve, reject) => {
+        resolve({})
+      }),
+  },
+}
 
 export default UserSignupPage

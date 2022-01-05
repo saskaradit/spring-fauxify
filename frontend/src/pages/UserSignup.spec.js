@@ -1,6 +1,10 @@
 import React from 'react'
-import { fireEvent, render, waitFor } from '@testing-library/react'
-import '@testing-library/jest-dom/extend-expect'
+import {
+  fireEvent,
+  render,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react'
 import UserSignupPage from './UserSignupPage'
 
 describe('UserSignupPage', () => {
@@ -45,7 +49,7 @@ describe('UserSignupPage', () => {
       usernameInput
 
     const mockAsyncDelayed = () => {
-      jest.fn().mockImplementation(() => {
+      return jest.fn().mockImplementation(() => {
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve({})
@@ -169,10 +173,28 @@ describe('UserSignupPage', () => {
       const { queryByText } = setupForSubmit({ actions })
       fireEvent.click(button)
 
-      await waitFor()
-
       const spinner = queryByText('Loading...')
-      expect(spinner).toBeInTheDocument()
+      await waitForElementToBeRemoved(spinner)
+      expect(spinner).not.toBeInTheDocument()
+    })
+    it('displays validation error for displayName', async () => {
+      const actions = {
+        postSignup: jest.fn().mockRejectedValue({
+          response: {
+            data: {
+              validationErrors: {
+                displayName: 'Cannot be null',
+              },
+            },
+          },
+        }),
+      }
+      const { findByText } = setupForSubmit({ actions })
+      fireEvent.click(button)
+
+      const errorMessage = await findByText('Cannot be null')
+
+      expect(errorMessage).toBeInTheDocument()
     })
   })
 })
