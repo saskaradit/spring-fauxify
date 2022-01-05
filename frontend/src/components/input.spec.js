@@ -51,10 +51,16 @@ describe('Layout', () => {
     const input = container.querySelector('input')
     expect(input.className).toBe('form-control is-invalid')
   })
-  it('displayes error text', () => {
+  it('displays error text', () => {
     const { queryByText } = render(
       <Input hasError={true} error='Cannot be null' />
     )
     expect(queryByText('Cannot be null')).toBeInTheDocument()
+  })
+  it('does not display error text when hasError is not provided', () => {
+    const { queryByText } = render(
+      <Input hasError={true} error='Cannot be null' />
+    )
+    expect(queryByText('Cannot be null')).not.toBeInTheDocument()
   })
 })

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import Input from '../components/input'
 
 const UserSignupPage = (props) => {
   const [displayName, setDisplayName] = useState('')
@@ -37,40 +38,47 @@ const UserSignupPage = (props) => {
     <div className='container col-4'>
       <h1 className='text-center'>Sign Up</h1>
       <div className='mb-3'>
-        <input
+        <Input
+          label='Display Name'
           type='text'
-          className='form-control'
           placeholder='Display Name'
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
+          hasError={errors.displayName && true}
+          error={errors.displayName}
         />
-        <div className='invalid-feedback'>{errors.displayName}</div>
       </div>
       <div className='mb-3'>
-        <input
-          className='form-control'
+        <Input
+          label='Username'
           type='text'
           placeholder='Username'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          hasError={errors.username && true}
+          error={errors.username}
         />
       </div>
       <div className='mb-3'>
-        <input
-          className='form-control'
+        <Input
+          label='Password'
           type='password'
           placeholder='Password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          hasError={errors.password && true}
+          error={errors.password}
         />
       </div>
       <div className='mb-3'>
-        <input
-          className='form-control'
+        <Input
+          label='Confirm Password'
           type='password'
           placeholder='Confirm Password'
           value={confirmPassword}
           onChange={(e) => setconfirmPassword(e.target.value)}
+          hasError={errors.confirmPassword && true}
+          error={errors.confirmPassword}
         />
       </div>
       <div className='text-center'>
@@ -78,7 +86,7 @@ const UserSignupPage = (props) => {
           Sign Up
           {sent && (
             <div className='spinner-border text-light spinner-border-sm mr-sm-1'>
-              <span className='sr-only'>Loading...</span>
+              <span className='sr-only'> </span>
             </div>
           )}
         </button>

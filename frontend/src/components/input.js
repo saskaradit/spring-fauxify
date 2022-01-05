@@ -15,6 +15,9 @@ const Input = (props) => {
         onChange={props.onChange}
         className={inputClassName}
       />
+      {props.hasError && (
+        <span className='invalid-feedback'>{props.error}</span>
+      )}
     </div>
   )
 }
