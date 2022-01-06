@@ -11,11 +11,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -72,11 +76,58 @@ public class LoginControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    public void postLogin_withValidCredentials_receivedLoggedInUserId(){
+        User user = userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String,Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+
+        Map<String,Object> body = response.getBody();
+        Integer id = (Integer) body.get("id");
+        assertThat(id).isEqualTo(user.getId());
+    }
+
+    @Test
+    public void postLogin_withValidCredentials_receivedLoggedInUsersImage(){
+        User user = userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String,Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+
+        Map<String,Object> body = response.getBody();
+        String image = (String) body.get("image");
+        assertThat(image).isEqualTo(user.getImage());
+    }
+
+    @Test
+    public void postLogin_withValidCredentials_receivedLoggedInUsersName(){
+        User user = userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String,Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+
+        Map<String,Object> body = response.getBody();
+        String displayName = (String) body.get("displayName");
+        assertThat(displayName).isEqualTo(user.getDisplayName());
+    }
+
+    @Test
+    public void postLogin_withValidCredentials_notReceivedLoggedInUsersPassword(){
+        userService.save(TestUtil.createValidUser());
+        authenticate();
+        ResponseEntity<Map<String,Object>> response = login(new ParameterizedTypeReference<Map<String, Object>>() {});
+        Map<String,Object> body = response.getBody();
+        assertThat(body.containsKey("password")).isFalse();
+    }
+
+
     private void authenticate(){
         testRestTemplate.getRestTemplate().getInterceptors().add(new BasicAuthenticationInterceptor("Saskara","Jengjet1"));
     }
 
     public <T> ResponseEntity<T> login(Class<T> responseType){
         return testRestTemplate.postForEntity(API_1_LOGIN,null, responseType);
+    }
+
+    public <T> ResponseEntity<T> login(ParameterizedTypeReference<T> responseType){
+        return testRestTemplate.exchange(API_1_LOGIN, HttpMethod.POST,null, responseType);
     }
 }
