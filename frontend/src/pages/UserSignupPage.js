@@ -81,8 +81,6 @@ const UserSignupPage = (props) => {
           onChange={(e) => {
             setPassword(e.target.value)
             setMatchPassword(confirmPassword === e.target.value)
-            // const errors = { ...errors }
-            // console.log('password', e.target.value, password)
           }}
           hasError={errors.password && true}
           error={errors.password}
