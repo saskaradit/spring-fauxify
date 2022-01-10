@@ -1,32 +1,31 @@
 import React, { useState } from 'react'
 import ButtonProgress from '../components/ButtonProgress'
-import Input from '../components/input'
+import Input from '../components/Input'
 
 const LoginPage = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [apiError, setaApiError] = useState('')
+  const [apiError, setApiError] = useState('')
   const [pendingApi, setPendingApi] = useState(false)
 
   const login = () => {
-    if (props.actions) {
-      const body = {
-        username,
-        password,
-      }
-      setPendingApi(true)
-      props.actions
-        .postLogin(body)
-        .then((resp) => {
-          setPendingApi(false)
-        })
-        .catch((error) => {
-          if (error.response) {
-            setaApiError(error.response.data.message)
-            setPendingApi(false)
-          }
-        })
+    const body = {
+      username,
+      password,
     }
+    setPendingApi(true)
+    props.actions
+      .postLogin(body)
+      .then((response) => {
+        setPendingApi(false)
+        props.history.push('/')
+      })
+      .catch((error) => {
+        if (error.response) {
+          setApiError(error.response.data.message)
+          setPendingApi(false)
+        }
+      })
   }
 
   let disableSubmit = false
@@ -38,7 +37,7 @@ const LoginPage = (props) => {
   }
 
   return (
-    <div className='container'>
+    <div className='container col-4'>
       <h1 className='text-center'>Login</h1>
       <div className='col-12 mb-3'>
         <Input
@@ -46,7 +45,7 @@ const LoginPage = (props) => {
           placeholder='Username'
           onChange={(e) => {
             setUsername(e.target.value)
-            setaApiError('')
+            setApiError('')
           }}
           value={username}
         />
@@ -58,7 +57,7 @@ const LoginPage = (props) => {
           type='password'
           onChange={(e) => {
             setPassword(e.target.value)
-            setaApiError('')
+            setApiError('')
           }}
           value={password}
         />

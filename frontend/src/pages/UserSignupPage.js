@@ -23,6 +23,7 @@ const UserSignupPage = (props) => {
         .postSignup(user)
         .then((response) => {
           setSent(false)
+          props.history.push('/')
         })
         .catch((apiError) => {
           if (
@@ -123,6 +124,9 @@ UserSignupPage.defaultProps = {
       new Promise((resolve, reject) => {
         resolve({})
       }),
+  },
+  history: {
+    push: () => {},
   },
 }
 

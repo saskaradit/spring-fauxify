@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, waitFor } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import LoginPage from './LoginPage'
 
 describe('LoginPage', () => {
@@ -145,6 +145,18 @@ describe('LoginPage', () => {
       fireEvent.click(loginButton)
       fireEvent.click(loginButton)
       expect(actions.postLogin).toHaveBeenCalledTimes(1)
+    })
+    it('redirects after successful login', async () => {
+      const actions = {
+        postLogin: jest.fn().mockResolvedValue({}),
+      }
+      const history = {
+        push: jest.fn(),
+      }
+      setupForSubmit({ history, actions })
+      fireEvent.click(loginButton)
+
+      expect(history.push).toBeCalledWith('/')
     })
   })
 })
