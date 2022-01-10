@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import Input from '../components/input'
+import ButtonProgress from '../components/ButtonProgress'
+import Input from '../components/Input'
 
 const UserSignupPage = (props) => {
   const [displayName, setDisplayName] = useState('')
@@ -105,18 +106,12 @@ const UserSignupPage = (props) => {
         />
       </div>
       <div className='text-center'>
-        <button
-          className='btn btn-primary'
+        <ButtonProgress
           onClick={submit}
           disabled={sent || !matchPassword}
-        >
-          Sign Up
-          {sent && (
-            <div className='spinner-border text-light spinner-border-sm mr-sm-1'>
-              <span className='sr-only'> </span>
-            </div>
-          )}
-        </button>
+          text='Sign Up'
+          pendingApiCall={sent}
+        ></ButtonProgress>
       </div>
     </div>
   )

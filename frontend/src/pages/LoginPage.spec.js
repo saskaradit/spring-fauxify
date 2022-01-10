@@ -33,6 +33,15 @@ describe('LoginPage', () => {
         },
       }
     }
+    const mockAsyncDelayed = () => {
+      return jest.fn().mockImplementation(() => {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve({})
+          }, 300)
+        })
+      })
+    }
 
     let usernameInput, passwordInput, loginButton
 
@@ -128,5 +137,16 @@ describe('LoginPage', () => {
       fireEvent.change(usernameInput, changeEvent('hehe'))
       expect(alert).not.toBeInTheDocument()
     })
+    it('does not allow user to click the login after an ongoing api call ', () => {
+      const actions = {
+        postLogin: mockAsyncDelayed(),
+      }
+      setupForSubmit({ actions })
+      fireEvent.click(loginButton)
+      fireEvent.click(loginButton)
+      expect(actions.postLogin).toHaveBeenCalledTimes(1)
+    })
   })
 })
+
+console.error = () => {}

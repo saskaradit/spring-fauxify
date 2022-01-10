@@ -7,12 +7,15 @@ import * as apiCalls from './api/apiCalls'
 const actions = {
   postSignup: apiCalls.signup,
 }
+const logActions = {
+  postLogin: apiCalls.login,
+}
 
 function App() {
   return (
     <div className='App'>
       <UserSignupPage actions={actions} />
-      <LoginPage />
+      <LoginPage actions={logActions} />
     </div>
   )
 }

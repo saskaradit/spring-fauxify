@@ -13,4 +13,13 @@ describe('API', () => {
       expect(path).toBe('/api/v1/users')
     })
   })
+  describe('login', () => {
+    it('calls /api/v1/login', () => {
+      const mockLogin = jest.fn()
+      axios.post = mockLogin
+      apiCalls.login({ username: 'saskara', password: 'Jengjet1' })
+      const path = mockLogin.mock.calls[0][0]
+      expect(path).toBe('/api/v1/login')
+    })
+  })
 })

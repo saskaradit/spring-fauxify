@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
+import ButtonProgress from '../components/ButtonProgress'
 import Input from '../components/input'
 
 const LoginPage = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [apiError, setaApiError] = useState('')
+  const [pendingApi, setPendingApi] = useState(false)
 
   const login = () => {
     if (props.actions) {
@@ -12,12 +14,16 @@ const LoginPage = (props) => {
         username,
         password,
       }
+      setPendingApi(true)
       props.actions
         .postLogin(body)
-        .then((resp) => {})
+        .then((resp) => {
+          setPendingApi(false)
+        })
         .catch((error) => {
           if (error.response) {
             setaApiError(error.response.data.message)
+            setPendingApi(false)
           }
         })
     }
@@ -63,13 +69,12 @@ const LoginPage = (props) => {
         </div>
       )}
       <div className='text-center'>
-        <button
-          className='btn btn-primary'
+        <ButtonProgress
           onClick={login}
-          disabled={disableSubmit}
-        >
-          Login
-        </button>
+          disabled={disableSubmit || pendingApi}
+          pendingApiCall={pendingApi}
+          text='Login'
+        ></ButtonProgress>
       </div>
     </div>
   )
