@@ -1,12 +1,10 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Input from '../components/input'
 
 const LoginPage = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [apiError, setaApiError] = useState('')
-  const [btnDisabled, setBtnDisabled] = useState(false)
 
   const login = () => {
     if (props.actions) {
@@ -14,18 +12,23 @@ const LoginPage = (props) => {
         username,
         password,
       }
-      props.actions.postLogin(body).catch((error) => {
-        if (error.response) {
-          setaApiError(error.response.data.message)
-        }
-      })
+      props.actions
+        .postLogin(body)
+        .then((resp) => {})
+        .catch((error) => {
+          if (error.response) {
+            setaApiError(error.response.data.message)
+          }
+        })
     }
   }
 
-  const checkField = () => {
-    if (username === '' || password === '') {
-      setBtnDisabled(true)
-    }
+  let disableSubmit = false
+  if (username === '') {
+    disableSubmit = true
+  }
+  if (password === '') {
+    disableSubmit = true
   }
 
   return (
@@ -37,8 +40,7 @@ const LoginPage = (props) => {
           placeholder='Username'
           onChange={(e) => {
             setUsername(e.target.value)
-            setError('')
-            checkField()
+            setaApiError('')
           }}
           value={username}
         />
@@ -50,13 +52,12 @@ const LoginPage = (props) => {
           type='password'
           onChange={(e) => {
             setPassword(e.target.value)
-            setError('')
-            checkField()
+            setaApiError('')
           }}
           value={password}
         />
       </div>
-      {apiError !== '' && (
+      {apiError && (
         <div className='col-12 mb-3'>
           <div className='alert alert-danger'>{apiError}</div>
         </div>
@@ -65,7 +66,7 @@ const LoginPage = (props) => {
         <button
           className='btn btn-primary'
           onClick={login}
-          disabled={btnDisabled}
+          disabled={disableSubmit}
         >
           Login
         </button>

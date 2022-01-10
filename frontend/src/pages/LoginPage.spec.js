@@ -45,21 +45,21 @@ describe('LoginPage', () => {
       passwordInput = queryByPlaceholderText('Password')
       loginButton = container.querySelector('button')
 
-      fireEvent.change(usernameInput, 'Saskara')
-      fireEvent.change(passwordInput, 'Jengjet1')
+      fireEvent.change(usernameInput, changeEvent('Saskara'))
+      fireEvent.change(passwordInput, changeEvent('Jengjet1'))
       return rendered
     }
 
     it('sets the username value into state', () => {
       const { queryByPlaceholderText } = render(<LoginPage />)
       const usernameInput = queryByPlaceholderText('Username')
-      fireEvent.change(usernameInput, 'rad')
+      fireEvent.change(usernameInput, changeEvent('rad'))
       expect(usernameInput).toHaveValue('rad')
     })
     it('sets the password value into state', () => {
       const { queryByPlaceholderText } = render(<LoginPage />)
       const passwordInput = queryByPlaceholderText('Password')
-      fireEvent.change(passwordInput, 'secret')
+      fireEvent.change(passwordInput, changeEvent('secret'))
       expect(passwordInput).toHaveValue('secret')
     })
     it('calls postlogin when the actions are provided in props and the fields are valid', () => {
@@ -79,6 +79,7 @@ describe('LoginPage', () => {
         postLogin: jest.fn().mockResolvedValue({}),
       }
       setupForSubmit({ actions })
+      fireEvent.click(loginButton)
       const expectedUser = {
         username: 'Saskara',
         password: 'Jengjet1',
@@ -90,11 +91,13 @@ describe('LoginPage', () => {
       expect(loginButton).not.toBeDisabled()
     })
     it('disables the button when the fields are empty', () => {
+      setupForSubmit()
+      fireEvent.change(usernameInput, changeEvent(''))
       expect(loginButton).toBeDisabled()
     })
     it('alert when login fails', async () => {
       const actions = {
-        postLogin: jest.fn().mockResolvedValue({
+        postLogin: jest.fn().mockRejectedValue({
           response: {
             data: {
               message: 'Login Failed',
@@ -110,7 +113,7 @@ describe('LoginPage', () => {
     })
     it('hides alert when input changes', async () => {
       const actions = {
-        postLogin: jest.fn().mockResolvedValue({
+        postLogin: jest.fn().mockRejectedValue({
           response: {
             data: {
               message: 'Login Failed',
@@ -122,7 +125,7 @@ describe('LoginPage', () => {
       fireEvent.click(loginButton)
 
       const alert = await findByText('Login Failed')
-      fireEvent.change(usernameInput, 'hehe')
+      fireEvent.change(usernameInput, changeEvent('hehe'))
       expect(alert).not.toBeInTheDocument()
     })
   })

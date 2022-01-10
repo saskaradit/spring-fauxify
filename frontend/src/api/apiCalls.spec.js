@@ -9,7 +9,7 @@ describe('API', () => {
       axios.post = mockSignup
       apiCalls.signup()
 
-      mockSignup.mock.calls[0][0]
+      const path = mockSignup.mock.calls[0][0]
       expect(path).toBe('/api/v1/users')
     })
   })

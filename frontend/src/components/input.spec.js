@@ -47,7 +47,7 @@ describe('Layout', () => {
     expect(input.className).toBe('form-control is-valid')
   })
   it('displays error style when there is an error', () => {
-    const { container } = render(<Input hasError={false} />)
+    const { container } = render(<Input hasError={true} />)
     const input = container.querySelector('input')
     expect(input.className).toBe('form-control is-invalid')
   })
@@ -58,9 +58,7 @@ describe('Layout', () => {
     expect(queryByText('Cannot be null')).toBeInTheDocument()
   })
   it('does not display error text when hasError is not provided', () => {
-    const { queryByText } = render(
-      <Input hasError={true} error='Cannot be null' />
-    )
+    const { queryByText } = render(<Input error='Cannot be null' />)
     expect(queryByText('Cannot be null')).not.toBeInTheDocument()
   })
 })

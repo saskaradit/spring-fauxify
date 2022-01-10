@@ -212,6 +212,13 @@ describe('UserSignupPage', () => {
       expect(button).not.toBeDisabled()
     })
     it('hides validation error for displayName', async () => {
+      const changeEvent = (content) => {
+        return {
+          target: {
+            value: content,
+          },
+        }
+      }
       const actions = {
         postSignup: jest.fn().mockRejectedValue({
           response: {
@@ -227,7 +234,7 @@ describe('UserSignupPage', () => {
       fireEvent.click(button)
 
       const errorMessage = await findByText('Cannot be null')
-      fireEvent.change(displayNameInput, 'name updated')
+      fireEvent.change(displayNameInput, changeEvent('name updated'))
 
       expect(errorMessage).not.toBeInTheDocument()
     })
