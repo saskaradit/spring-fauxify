@@ -146,18 +146,6 @@ describe('LoginPage', () => {
       fireEvent.click(loginButton)
       expect(actions.postLogin).toHaveBeenCalledTimes(1)
     })
-    it('redirects after successful login', async () => {
-      const actions = {
-        postLogin: jest.fn().mockResolvedValue({}),
-      }
-      const history = {
-        push: jest.fn(),
-      }
-      setupForSubmit({ history, actions })
-      fireEvent.click(loginButton)
-
-      expect(history.push).toBeCalledWith('/')
-    })
   })
 })
 
