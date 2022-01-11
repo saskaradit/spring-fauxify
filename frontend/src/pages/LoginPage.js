@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import ButtonProgress from '../components/ButtonProgress'
 import Input from '../components/Input'
 
@@ -17,6 +18,14 @@ const LoginPage = (props) => {
     props.actions
       .postLogin(body)
       .then((response) => {
+        const action = {
+          type: 'login-success',
+          payload: {
+            ...response.data,
+            password: state.password,
+          },
+        }
+        props.dispatch(action)
         setPendingApi(false)
         props.history.push('/')
       })
@@ -83,6 +92,7 @@ LoginPage.defaultProps = {
   actions: {
     postLogin: () => new Promise((resolve, reject) => resolve({})),
   },
+  dispatch: () => {},
 }
 
-export default LoginPage
+export default connect()(LoginPage)
