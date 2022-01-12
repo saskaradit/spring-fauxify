@@ -27,7 +27,7 @@ const UserSignupPage = (props) => {
             username,
             password,
           }
-          setPendingApi(true)
+          setSent(true)
           props.actions
             .postLogin(body)
             .then((response) => {
@@ -39,13 +39,13 @@ const UserSignupPage = (props) => {
                 },
               }
               props.dispatch(action)
-              setPendingApi(false)
+              setSent(false)
               props.history.push('/')
             })
             .catch((error) => {
               if (error.response) {
                 setErrors(error.response.data.message)
-                setPendingApi(false)
+                setSent(false)
               }
             })
           // setSent(false)

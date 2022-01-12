@@ -35,9 +35,13 @@ const Navbar = (props) => {
           >
             My Profile
           </Link>
-          <li className='nav-item nav-link' onClick={logout}>
-            Logout
-          </li>
+        </li>
+        <li
+          className='nav-item nav-link'
+          onClick={logout}
+          style={{ cursor: 'pointer' }}
+        >
+          Logout
         </li>
       </ul>
     )
