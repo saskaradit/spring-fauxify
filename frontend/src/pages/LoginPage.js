@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import ButtonProgress from '../components/ButtonProgress'
 import Input from '../components/Input'
+import * as authActions from '../redux/authActions'
 
 const LoginPage = (props) => {
   const [username, setUsername] = useState('')
@@ -18,14 +19,12 @@ const LoginPage = (props) => {
     props.actions
       .postLogin(body)
       .then((response) => {
-        const action = {
-          type: 'login-success',
-          payload: {
+        props.dispatch(
+          authActions.loginSuccess({
             ...response.data,
-            password: state.password,
-          },
-        }
-        props.dispatch(action)
+            password: password,
+          })
+        )
         setPendingApi(false)
         props.history.push('/')
       })
@@ -95,4 +94,12 @@ LoginPage.defaultProps = {
   dispatch: () => {},
 }
 
-export default connect()(LoginPage)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    actions: {
+      postLogin: (body) => dispatch(authActions.loginHandler(body)),
+    },
+  }
+}
+
+export default connect(null, mapDispatchToProps)(LoginPage)

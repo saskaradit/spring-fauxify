@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import ButtonProgress from '../components/ButtonProgress'
 import Input from '../components/Input'
 
@@ -22,15 +23,37 @@ const UserSignupPage = (props) => {
       props.actions
         .postSignup(user)
         .then((response) => {
-          setSent(false)
-          props.history.push('/')
+          const body = {
+            username,
+            password,
+          }
+          setPendingApi(true)
+          props.actions
+            .postLogin(body)
+            .then((response) => {
+              const action = {
+                type: 'login-success',
+                payload: {
+                  ...response.data,
+                  password: password,
+                },
+              }
+              props.dispatch(action)
+              setPendingApi(false)
+              props.history.push('/')
+            })
+            .catch((error) => {
+              if (error.response) {
+                setErrors(error.response.data.message)
+                setPendingApi(false)
+              }
+            })
+          // setSent(false)
+          // props.history.push('/')
         })
-        .catch((apiError) => {
-          if (
-            apiError.response.data &&
-            apiError.response.data.validationErrors
-          ) {
-            setErrors(apiError.response.data.validationErrors)
+        .catch((error) => {
+          if (error.response.data && error.response.data.validationErrors) {
+            setErrors(error.response.data.validationErrors)
           }
           setSent(false)
         })
@@ -130,4 +153,4 @@ UserSignupPage.defaultProps = {
   },
 }
 
-export default UserSignupPage
+export default connect()(UserSignupPage)

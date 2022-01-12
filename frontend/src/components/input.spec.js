@@ -62,3 +62,5 @@ describe('Layout', () => {
     expect(queryByText('Cannot be null')).not.toBeInTheDocument()
   })
 })
+
+console.error = () => {}

@@ -3,12 +3,11 @@ import { fireEvent, render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import App from './App'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import authReducer from './redux/authReducer'
 import axios from 'axios'
+import configureStore from '../redux/configureStore'
 
 const setup = (path) => {
-  const store = createStore(authReducer)
+  const store = configureStore(false)
   return render(
     <Provider store={store}>
       <MemoryRouter initialEntries={[path]}>
@@ -16,6 +15,13 @@ const setup = (path) => {
       </MemoryRouter>
     </Provider>
   )
+}
+const changeEvent = (content) => {
+  return {
+    target: {
+      value: content,
+    },
+  }
 }
 
 describe('App', () => {
@@ -37,15 +43,9 @@ describe('App', () => {
     const header = container.querySelector('h1')
     expect(header).toHaveTextContent('Sign Up')
   })
-  it('displats My Profile after login success', async () => {
-    const { queryByPlaceholderText, container, queryByText } = setup('/login')
-    const changeEvent = (content) => {
-      return {
-        target: {
-          value: content,
-        },
-      }
-    }
+  it('displays My Profile after login success', async () => {
+    const { queryByPlaceholderText, container, findByText } = setup('/login')
+
     const usernameInput = queryByPlaceholderText('Username')
     const passwordInput = queryByPlaceholderText('Password')
     const loginButton = container.querySelector('button')
@@ -63,7 +63,40 @@ describe('App', () => {
     })
     fireEvent.click(loginButton)
 
-    const myProfileLink = await waitFor(() => queryByText('My Profile'))
+    const myProfileLink = await findByText('My Profile')
+    expect(myProfileLink).toBeInTheDocument()
+  })
+  it('displays My Profile after signup success', async () => {
+    const { queryByPlaceholderText, container, findByText } = setup('/signup')
+    const displayNameInput = queryByPlaceholderText('Display Name')
+    const usernameInput = queryByPlaceholderText('Username')
+    const passwordInput = queryByPlaceholderText('Password')
+    const confirmPasswordInput = queryByPlaceholderText('Confirm Password')
+
+    fireEvent.change(displayNameInput, 'display1')
+    fireEvent.change(usernameInput, 'user1')
+    fireEvent.change(passwordInput, 'Jengjet1')
+    fireEvent.change(confirmPasswordInput, 'Jengjet1')
+
+    const loginButton = container.querySelector('button')
+    axios.post = jest
+      .fn()
+      .mockResolvedValueOnce({
+        data: {
+          message: 'User Saved',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: {
+          id: 1,
+          username: 'user1',
+          displayName: 'display1',
+          image: 'profile1.png',
+        },
+      })
+    fireEvent.click(loginButton)
+
+    const myProfileLink = await findByText('My Profile')
     expect(myProfileLink).toBeInTheDocument()
   })
 })
