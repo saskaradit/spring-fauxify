@@ -6,6 +6,11 @@ import { Provider } from 'react-redux'
 import axios from 'axios'
 import configureStore from '../redux/configureStore'
 
+beforeEach(() => {
+  localStorage.clear()
+  delete axios.defaults.headers.common['Authorization']
+})
+
 const setup = (path) => {
   const store = configureStore(false)
   return render(
@@ -98,6 +103,91 @@ describe('App', () => {
 
     const myProfileLink = await findByText('My Profile')
     expect(myProfileLink).toBeInTheDocument()
+  })
+
+  it('saves logged in user data to localStorage', async () => {
+    const { queryByPlaceholderText, container, findByText } = setup('/signup')
+    const displayNameInput = queryByPlaceholderText('Display Name')
+    const usernameInput = queryByPlaceholderText('Username')
+    const passwordInput = queryByPlaceholderText('Password')
+    const confirmPasswordInput = queryByPlaceholderText('Confirm Password')
+
+    fireEvent.change(displayNameInput, 'display1')
+    fireEvent.change(usernameInput, 'user1')
+    fireEvent.change(passwordInput, 'Jengjet1')
+    fireEvent.change(confirmPasswordInput, 'Jengjet1')
+
+    const loginButton = container.querySelector('button')
+    axios.post = jest
+      .fn()
+      .mockResolvedValueOnce({
+        data: {
+          message: 'User Saved',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: {
+          id: 1,
+          username: 'user1',
+          displayName: 'display1',
+          image: 'profile1.png',
+        },
+      })
+    fireEvent.click(loginButton)
+
+    const myProfileLink = await findByText('My Profile')
+    const dataStorage = JSON.parse(localStorage.getItem('faux-auth'))
+    expect(dataStorage).toEqual({
+      id: 1,
+      username: 'user1',
+      isLoggedIn: true,
+      image: 'profile1.png',
+      password: 'Jengjet1',
+    })
+  })
+  it('displays loggedin in navbar when user is in localstorage', () => {
+    localStorage.getItem(
+      'faux-auth',
+      JSON.stringify({
+        id: 1,
+        username: 'user1',
+        isLoggedIn: true,
+        image: 'profile1.png',
+        password: 'Jengjet1',
+      })
+    )
+    const { queryByText } = setup('/')
+    const myProfileLink = queryByText('My Profile')
+    expect(myProfileLink).toBeInTheDocument()
+  })
+  it('set axios auth with bas64 encoded', async () => {
+    const { queryByPlaceholderText, container, findByText } = setup('/signup')
+    const displayNameInput = queryByPlaceholderText('Display Name')
+    const usernameInput = queryByPlaceholderText('Username')
+    const passwordInput = queryByPlaceholderText('Password')
+    const confirmPasswordInput = queryByPlaceholderText('Confirm Password')
+
+    fireEvent.change(displayNameInput, 'display1')
+    fireEvent.change(usernameInput, 'user1')
+    fireEvent.change(passwordInput, 'Jengjet1')
+    fireEvent.change(confirmPasswordInput, 'Jengjet1')
+
+    const loginButton = container.querySelector('button')
+    axios.post = jest.fn().mockResolvedValueOnce({
+      data: {
+        id: 1,
+        username: 'user1',
+        displayName: 'display1',
+        image: 'profile1.png',
+      },
+    })
+    fireEvent.click(loginButton)
+
+    const axiosAuth = axios.defaults.headers.common['Authorization']
+
+    const encoded = btoa('user1:Jengjet1')
+    const expectedAuth = `Basic ${encoded}`
+    expect(expectedAuth).toBe(expectedAuth)
   })
 })
 
