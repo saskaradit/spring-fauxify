@@ -1,11 +1,7 @@
 import React from 'react'
-import {
-  fireEvent,
-  render,
-  waitFor,
-  waitForElementToBeRemoved,
-} from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import UserSignupPage from './UserSignupPage'
+import * as authActions from '../redux/authActions'
 
 describe('UserSignupPage', () => {
   describe('Layout', () => {

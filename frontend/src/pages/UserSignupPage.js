@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import ButtonProgress from '../components/ButtonProgress'
 import Input from '../components/Input'
+import * as authActions from '../redux/authActions'
 
 const UserSignupPage = (props) => {
   const [displayName, setDisplayName] = useState('')
@@ -23,33 +24,8 @@ const UserSignupPage = (props) => {
       props.actions
         .postSignup(user)
         .then((response) => {
-          const body = {
-            username,
-            password,
-          }
-          setSent(true)
-          props.actions
-            .postLogin(body)
-            .then((response) => {
-              const action = {
-                type: 'login-success',
-                payload: {
-                  ...response.data,
-                  password: password,
-                },
-              }
-              props.dispatch(action)
-              setSent(false)
-              props.history.push('/')
-            })
-            .catch((error) => {
-              if (error.response) {
-                setErrors(error.response.data.message)
-                setSent(false)
-              }
-            })
-          // setSent(false)
-          // props.history.push('/')
+          setSent(false)
+          props.history.push('/')
         })
         .catch((error) => {
           if (error.response.data && error.response.data.validationErrors) {
@@ -153,4 +129,12 @@ UserSignupPage.defaultProps = {
   },
 }
 
-export default connect()(UserSignupPage)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    actions: {
+      postSignup: (user) => dispatch(authActions.signupHandler(user)),
+    },
+  }
+}
+
+export default connect(null, mapDispatchToProps)(UserSignupPage)
