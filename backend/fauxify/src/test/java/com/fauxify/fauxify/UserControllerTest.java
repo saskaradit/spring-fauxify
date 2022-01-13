@@ -210,9 +210,16 @@ public class UserControllerTest {
     @Test
     public void getUser_whenThereIsAUserInDB_receivePageWithUser(){
         userRepository.save(createValidUser());
-        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {
-        });
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
         assertThat(response.getBody().getNumberOfElements()).isEqualTo(1);
+    }
+    @Test
+    public void getUser_whenThereIsAUserInDB_receiveUserWithoutPassword(){
+        userRepository.save(createValidUser());
+        ResponseEntity<TestPage<Map<String,Object>>> response = getUsers(new ParameterizedTypeReference<TestPage<Map<String,Object>>>() {});
+        assertThat(response.getBody().getNumberOfElements()).isEqualTo(1);
+        Map<String,Object> entity = response.getBody().getContent().get(0);
+        assertThat(entity.containsKey("password")).isFalse();
     }
 
     public <T> ResponseEntity<T> postSignup(Object request, Class<T> response){

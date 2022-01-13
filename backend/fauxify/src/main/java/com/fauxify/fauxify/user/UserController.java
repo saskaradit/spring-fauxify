@@ -1,5 +1,6 @@
 package com.fauxify.fauxify.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fauxify.fauxify.error.ApiError;
 import com.fauxify.fauxify.shared.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
+    @JsonView(Views.Base.class)
     Page<?> getUsers() {
         return userService.getUsers();
     }
