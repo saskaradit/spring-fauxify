@@ -4,6 +4,7 @@ package com.fauxify.fauxify.user;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fauxify.fauxify.error.ApiError;
 import com.fauxify.fauxify.shared.CurrentUser;
+import com.fauxify.fauxify.user.vm.UserVM;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,9 +20,8 @@ import java.util.Map;
 @RestController
 public class LoginController {
     @PostMapping("/api/v1/login")
-    @JsonView(Views.Base.class)
-    User handleLogin(@CurrentUser User loggedInUser){
-        return loggedInUser;
+    UserVM handleLogin(@CurrentUser User loggedInUser){
+        return new UserVM(loggedInUser);
     }
 
     @ExceptionHandler({AccessDeniedException.class})
