@@ -1,6 +1,4 @@
 package com.fauxify.fauxify.user.vm;
-
-
 import com.fauxify.fauxify.user.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;

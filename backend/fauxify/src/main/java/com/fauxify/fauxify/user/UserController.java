@@ -2,6 +2,7 @@ package com.fauxify.fauxify.user;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fauxify.fauxify.error.ApiError;
+import com.fauxify.fauxify.shared.CurrentUser;
 import com.fauxify.fauxify.shared.GenericResponse;
 import com.fauxify.fauxify.user.vm.UserVM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    Page<UserVM> getUsers(Pageable page) {
-        return userService.getUsers(page).map(UserVM::new);
+    Page<UserVM> getUsers(@CurrentUser User loggedInUser, Pageable page) {
+        return userService.getUsers(loggedInUser,page).map(UserVM::new);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})

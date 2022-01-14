@@ -5,10 +5,10 @@ import com.fauxify.fauxify.user.User;
 public class TestUtil {
     public static User createValidUser() {
         User user = new User();
-        user.setUsername("Saskara");
+        user.setUsername("test-user");
         user.setDisplayName("test-display");
         user.setPassword("Jengjet1");
-        user.setImage("rad-image.png");
+        user.setImage("profile-image.png");
         return user;
     }
 
