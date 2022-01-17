@@ -49,18 +49,11 @@ describe('UserList', () => {
       const header = container.querySelector('h3')
       expect(header).toHaveTextContent('Users')
     })
-    it('displays three items when listUser api returns three users', async () => {
-      apiCalls.listUsers = jest.fn().mockResolvedValue(mockSuccessGetSinglePage)
-      const { queryByTestId } = setup()
-
-      const userGroup = queryByTestId('usergroup')
-      expect(userGroup.childElementCount).toBe(3)
-    })
     it('displays the displayName@username when listUser api returns users', async () => {
       apiCalls.listUsers = jest.fn().mockResolvedValue(mockSuccessGetSinglePage)
-      const { queryByText } = setup()
 
-      const firstUser = await waitFor(() => queryByText('display1@user1'))
+      const { findByText } = setup()
+      const firstUser = await findByText('display1@user1')
       expect(firstUser).toBeInTheDocument()
     })
   })
@@ -81,3 +74,5 @@ describe('UserList', () => {
     })
   })
 })
+
+console.error = () => {}
