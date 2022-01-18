@@ -1,5 +1,6 @@
 package com.fauxify.fauxify.user;
 
+import com.fauxify.fauxify.error.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,5 +29,13 @@ public class UserService {
             return userRepository.findByUsernameNot(loggedInUser.getUsername(),pageable);
         }
         return userRepository.findAll(pageable);
+    }
+
+    public User getByUsername(String username){
+        User user = userRepository.findByUsername(username);
+        if(user == null){
+            throw new NotFoundException(username + " not found");
+        }
+        return userRepository.findByUsername(username);
     }
 }
