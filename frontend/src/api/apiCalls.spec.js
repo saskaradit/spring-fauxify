@@ -42,4 +42,12 @@ describe('API', () => {
       expect(mockListUsers).toBeCalledWith('/api/v1/users?page=5&size=3')
     })
   })
+  describe('getUser', () => {
+    it('calls /api/v1/users/user5 when user5 is provided', () => {
+      const moockGetUser = jest.fn()
+      axios.get = moockGetUser
+      apiCalls.getUser('user5')
+      expect(moockGetUser).toBeCalledWith('/api/v1/users/user5')
+    })
+  })
 })
