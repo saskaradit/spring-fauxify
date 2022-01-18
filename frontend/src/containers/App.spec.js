@@ -24,6 +24,23 @@ apiCalls.getUser = jest.fn().mockResolvedValue({
   },
 })
 
+const mockSuccessGetUser1 = {
+  data: {
+    id: 1,
+    username: 'user1',
+    displayName: 'display1',
+    image: 'profile1.png',
+  },
+}
+const mockSuccessGetUser2 = {
+  data: {
+    id: 2,
+    username: 'user2',
+    displayName: 'display2',
+    image: 'profile2.png',
+  },
+}
+
 beforeEach(() => {
   localStorage.clear()
   delete axios.defaults.headers.common['Authorization']

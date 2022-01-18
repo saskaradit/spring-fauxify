@@ -24,5 +24,5 @@ export const listUsers = (param = { page: 0, size: 3 }) => {
 }
 
 export const getUser = (username) => {
-  return axios.get(`/api/v1/userrs/${username}`)
+  return axios.get(`/api/v1/users/${username}`)
 }
